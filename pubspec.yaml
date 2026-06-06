@@ -1,0 +1,7 @@
+name: nounogram_words
+description: Graded English word lists (Pre-K through Academic) built from open sources, for the Nounogram puzzle game.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
