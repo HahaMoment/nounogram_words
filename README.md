@@ -1,8 +1,8 @@
 # nounogram_words
 
-Graded English word lists — **Pre-K through Academic** — built from open
-sources, for the [Nounogram](https://github.com/HahaMoment) puzzle game (and
-reusable by anyone).
+Graded English word lists — **per grade, Pre-K through Grade 12** — built from
+open sources, for the [Nounogram](https://github.com/HahaMoment) puzzle game
+(and reusable by anyone).
 
 Each word is tagged with the **earliest** reading level it appears at, so a word
 a young child already knows isn't labelled harder than it is.
@@ -18,35 +18,28 @@ a young child already knows isn't labelled harder than it is.
 | 4 | Grade 3 | Dolch third grade, Fry 201–300 |
 | 5 | Grade 4 | Fry 301–500 |
 | 6 | Grade 5 | Fry 501–1000 |
-| 7 | Academic | New Academic Word List (AWL) headwords |
+| 7–9 | Grades 6–8 | NGSL, split into thirds by frequency rank |
+| 10–13 | Grades 9–12 | NAWL, split into quarters by frequency rank |
 
-Only plain A–Z words of length ≥ 2 are kept. The AWL contributes **headwords
-only** — its inflected/derived sub-words are dropped to keep the lists clean.
-
-> Grades 6–12 are intentionally not yet split per-grade; that awaits adding the
-> NGSL/NAWL (CC BY-SA) sources, which would change the data licence to CC BY-SA.
+Only plain A–Z words of length ≥ 2 are kept.
 
 ## Layout
 
-- `data/grade-*.txt` — per-level word lists (canonical, reusable).
+- `data/grade-*.txt` — per-grade word lists (canonical, reusable).
 - `data/word-levels.csv` — flat `word,level_index,level`.
 - `lib/` — Dart binding: `WordLevel`, `levelOf(word)`, `wordsUpToLevel(level)`.
 - `tool/build.dart` — regenerates everything from `tool/data/` sources.
+- `bin/report.dart` — prints a per-grade breakdown.
 
-Rebuild with `dart run tool/build.dart`.
+Rebuild with `dart run tool/build.dart`; report with `dart run bin/report.dart`.
 
 ## Sources & licensing
 
-**Code** (`lib/`, `tool/`): MIT.
+- **Code** (`lib/`, `tool/`, `bin/`): MIT.
+- **Word data** (`data/`, `lib/src/word_levels_data.dart`): **CC BY-SA 4.0**
+  (the NGSL/NAWL are ShareAlike, so the derived data is too). Free to use
+  commercially with attribution; adaptations must stay CC BY-SA.
 
-**Word data** (`data/`, `lib/src/word_levels_data.dart`): our compilation and
-level assignments are dedicated to the public domain (CC0 1.0). The underlying
-sources:
-
-- **Fry Instant Word List** (Edward Fry) — public domain.
-- **Dolch sight words** (Edward Dolch) — public domain.
-- **New Academic Word List / Academic Word List** — © Averil Coxhead, Victoria
-  University of Wellington; free to use, attribution requested.
-  <https://www.wgtn.ac.nz/lals/resources/academicwordlist>
-
-If you use this data, crediting the AWL is appreciated.
+Sources: Fry (public domain), Dolch (public domain), NGSL & NAWL
+(© Browne, Culligan & Phillips, CC BY-SA 4.0). See `NOTICE` for full attribution
+and `LICENSE` for terms.
