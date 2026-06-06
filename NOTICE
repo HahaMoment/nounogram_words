@@ -1,0 +1,23 @@
+nounogram_words — attribution for the word data
+=================================================
+
+The graded word lists in this package (data/, lib/src/word_levels_data.dart)
+are derived from the following sources and are released under CC BY-SA 4.0.
+
+- Fry Instant Word List (Edward B. Fry) — public domain.
+  Used for Kindergarten–Grade 5 (frequency blocks).
+
+- Dolch Sight Words (Edward W. Dolch) — public domain.
+  Used as Pre-K–Grade 3 anchors.
+
+- New General Service List (NGSL), © Charles Browne, Brent Culligan &
+  Joseph Phillips — CC BY-SA 4.0. https://www.newgeneralservicelist.com/
+  Used for Grades 6–8 (split by frequency rank).
+
+- New Academic Word List (NAWL), © Charles Browne, Brent Culligan &
+  Joseph Phillips — CC BY-SA 4.0. https://www.newgeneralservicelist.com/new-academic-word-list-nawl
+  Used for Grades 9–12 (split by frequency rank).
+
+Our compilation, level assignments, and derived lists (© 2026 Haha Moment, LLC)
+are likewise licensed CC BY-SA 4.0. If you reuse the data, please retain this
+attribution.

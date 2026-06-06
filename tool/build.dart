@@ -1,41 +1,38 @@
-// Builds the graded word data from the clean source lists in tool/data/ and
-// writes:
+// Builds the graded word data from the open source lists in tool/data/ and writes:
 //   - lib/src/word_levels_data.dart  (the Dart const map consumed by apps)
 //   - data/grade-*.txt               (per-grade word lists, canonical/reusable)
 //   - data/word-levels.csv           (flat word,level for any consumer)
 //
 // Run from the package root:  dart run tool/build.dart
 //
-// Levels (index): a word is tagged with the EARLIEST it appears at.
-//   0 Pre-K        Dolch pre-primer
-//   1 Kindergarten Dolch primer + Dolch nouns, Fry 1-50
-//   2 Grade 1      Dolch first grade, Fry 51-100
-//   3 Grade 2      Dolch second grade, Fry 101-200
-//   4 Grade 3      Dolch third grade, Fry 201-300
-//   5 Grade 4      Fry 301-500
-//   6 Grade 5      Fry 501-1000
-//   7 Academic     New Academic Word List headwords (AWL, Coxhead)
+// A word takes the EARLIEST (lowest) level it appears at. Levels (index):
+//   0  Pre-K        Dolch pre-primer
+//   1  Kindergarten Dolch primer + Dolch nouns, Fry 1-50
+//   2  Grade 1      Dolch first grade, Fry 51-100
+//   3  Grade 2      Dolch second grade, Fry 101-200
+//   4  Grade 3      Dolch third grade, Fry 201-300
+//   5  Grade 4      Fry 301-500
+//   6  Grade 5      Fry 501-1000
+//   7  Grade 6      NGSL frequency rank, 1st third
+//   8  Grade 7      NGSL 2nd third
+//   9  Grade 8      NGSL 3rd third
+//   10 Grade 9      NAWL frequency rank, 1st quarter
+//   11 Grade 10     NAWL 2nd quarter
+//   12 Grade 11     NAWL 3rd quarter
+//   13 Grade 12     NAWL 4th quarter
 //
-// Only plain A-Z words of length >= 2 survive. Sources: Fry (public domain),
-// Dolch (public domain), AWL (Coxhead — free to use). See README.
-import 'dart:convert';
+// Sources: Fry (public domain), Dolch (public domain), NGSL & NAWL
+// (CC BY-SA 4.0). Only plain A-Z words of length >= 2 survive. See README.
 import 'dart:io';
 
 const levelNames = [
-  'prek',
-  'k',
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  'academic',
+  'prek', 'k', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
 ];
 
 void main() {
   final dolch = File('tool/data/dolch.js').readAsStringSync();
   final fry = File('tool/data/fry.txt').readAsStringSync();
-  final awl = File('tool/data/awl.json').readAsStringSync();
+  final ngslNawl = File('tool/data/ngsl_nawl.csv').readAsLinesSync();
 
   final level = <String, int>{};
   void tag(String raw, int lvl) {
@@ -51,7 +48,7 @@ void main() {
     }
   }
 
-  // --- Dolch: explicit grade groups ---------------------------------------
+  // --- Dolch: explicit grade groups (public domain) -----------------------
   String dolchGroup(String name) {
     final m = RegExp("let $name\\s*=\\s*'([^']*)'").firstMatch(dolch);
     if (m == null) throw StateError('Dolch group $name not found');
@@ -72,7 +69,7 @@ void main() {
       .where((l) => l.isNotEmpty)
       .toList()
     ..removeAt(0); // header "List 1 .. List 4"
-  final ranked = <String>[]; // index 0 == Fry rank 1
+  final ranked = <String>[];
   for (var col = 0; col < 4; col++) {
     for (final line in fryLines) {
       final cells = line.split('\t');
@@ -94,13 +91,34 @@ void main() {
     tag(ranked[i], fryLevel(i + 1));
   }
 
-  // --- AWL: headwords only (drop inflected/derived subwords) ---------------
-  final awlData = jsonDecode(awl) as Map<String, dynamic>;
-  for (final sublist in awlData.values) {
-    for (final entry in (sublist as Map<String, dynamic>).entries) {
-      tag(entry.key, 7);
+  // --- NGSL (-> G6-8) and NAWL (-> G9-12), split by frequency rank --------
+  final ngsl = <(String, int)>[]; // (lemma, rank)
+  final nawl = <(String, int)>[];
+  for (final line in ngslNawl.skip(1)) {
+    final c = line.split(',');
+    if (c.length < 3) continue;
+    final lemma = c[0];
+    final rank = int.tryParse(c[2]);
+    if (rank == null) continue;
+    if (c[1] == 'NGSL') {
+      ngsl.add((lemma, rank));
+    } else if (c[1] == 'NAWL') {
+      nawl.add((lemma, rank));
     }
   }
+  ngsl.sort((a, b) => a.$2.compareTo(b.$2));
+  nawl.sort((a, b) => a.$2.compareTo(b.$2));
+
+  // Split a rank-ordered list into [buckets] even bands starting at [baseLevel].
+  void tagBands(List<(String, int)> list, int buckets, int baseLevel) {
+    for (var i = 0; i < list.length; i++) {
+      final bucket = (i * buckets) ~/ list.length;
+      tag(list[i].$1, baseLevel + bucket);
+    }
+  }
+
+  tagBands(ngsl, 3, 7); // G6, G7, G8
+  tagBands(nawl, 4, 10); // G9, G10, G11, G12
 
   // --- Emit -----------------------------------------------------------------
   final words = level.keys.toList()..sort();
@@ -109,7 +127,6 @@ void main() {
     counts[level[w]!]++;
   }
 
-  // Per-grade text files.
   for (var lvl = 0; lvl < levelNames.length; lvl++) {
     final list = [
       for (final w in words)
@@ -119,18 +136,16 @@ void main() {
         .writeAsStringSync('${list.join('\n')}\n');
   }
 
-  // Flat CSV.
   final csv = StringBuffer('word,level_index,level\n');
   for (final w in words) {
     csv.writeln('$w,${level[w]},${levelNames[level[w]!]}');
   }
   File('data/word-levels.csv').writeAsStringSync(csv.toString());
 
-  // Dart const map.
   final dart = StringBuffer()
     ..writeln('// GENERATED by tool/build.dart — do not edit.')
     ..writeln('//')
-    ..writeln('// Word -> earliest level index (0=Pre-K .. 7=Academic).')
+    ..writeln('// Word -> earliest level index (0=Pre-K .. 13=Grade 12).')
     ..writeln('// Per-level counts: ${counts.join(', ')} (total ${words.length}).')
     ..writeln('library;')
     ..writeln()

@@ -1,6 +1,10 @@
-MIT License (code)
+This repository is dual-licensed:
 
-Copyright (c) 2026 HahaMoment
+================================================================================
+CODE  (lib/ Dart bindings, tool/, bin/)  —  MIT License
+================================================================================
+
+Copyright (c) 2026 Haha Moment, LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,11 +24,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
----
+================================================================================
+WORD DATA  (data/, lib/src/word_levels_data.dart)  —  CC BY-SA 4.0
+================================================================================
 
-The MIT license above covers the CODE in this repository (lib/, tool/).
+The graded word lists and level assignments are licensed under the Creative
+Commons Attribution-ShareAlike 4.0 International License (CC BY-SA 4.0), because
+they incorporate the NGSL and NAWL, which are CC BY-SA. You are free to share
+and adapt the data for any purpose, including commercially, provided you give
+appropriate credit and license your adaptations under the same terms.
 
-The WORD DATA (data/, lib/src/word_levels_data.dart) is derived from open
-sources and is released into the public domain (CC0 1.0) as to our compilation
-and level assignments. See README.md ("Sources & licensing") for the
-per-source terms and attribution.
+Full text: https://creativecommons.org/licenses/by-sa/4.0/
+
+See NOTICE for attribution of the underlying sources.

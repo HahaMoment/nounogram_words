@@ -10,9 +10,15 @@ enum WordLevel {
   grade3,
   grade4,
   grade5,
-  academic;
+  grade6,
+  grade7,
+  grade8,
+  grade9,
+  grade10,
+  grade11,
+  grade12;
 
-  /// A full label for menus ("Kindergarten", "Grade 1", "Academic").
+  /// A full label for menus ("Kindergarten", "Grade 1").
   String get label => switch (this) {
         WordLevel.preK => 'Pre-K',
         WordLevel.kindergarten => 'Kindergarten',
@@ -21,10 +27,16 @@ enum WordLevel {
         WordLevel.grade3 => 'Grade 3',
         WordLevel.grade4 => 'Grade 4',
         WordLevel.grade5 => 'Grade 5',
-        WordLevel.academic => 'Academic',
+        WordLevel.grade6 => 'Grade 6',
+        WordLevel.grade7 => 'Grade 7',
+        WordLevel.grade8 => 'Grade 8',
+        WordLevel.grade9 => 'Grade 9',
+        WordLevel.grade10 => 'Grade 10',
+        WordLevel.grade11 => 'Grade 11',
+        WordLevel.grade12 => 'Grade 12',
       };
 
-  /// A compact badge ("K", "1", "AC") for tagging words inline.
+  /// A compact badge ("PK", "K", "1" … "12") for tagging words inline.
   String get badge => switch (this) {
         WordLevel.preK => 'PK',
         WordLevel.kindergarten => 'K',
@@ -33,7 +45,13 @@ enum WordLevel {
         WordLevel.grade3 => '3',
         WordLevel.grade4 => '4',
         WordLevel.grade5 => '5',
-        WordLevel.academic => 'AC',
+        WordLevel.grade6 => '6',
+        WordLevel.grade7 => '7',
+        WordLevel.grade8 => '8',
+        WordLevel.grade9 => '9',
+        WordLevel.grade10 => '10',
+        WordLevel.grade11 => '11',
+        WordLevel.grade12 => '12',
       };
 }
 
