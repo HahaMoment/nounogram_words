@@ -18,6 +18,14 @@ are derived from the following sources and are released under CC BY-SA 4.0.
   Joseph Phillips — CC BY-SA 4.0. https://www.newgeneralservicelist.com/new-academic-word-list-nawl
   Used for Grades 9–12 (split by frequency rank).
 
+- SCOWL (Spell Checker Oriented Word Lists), Copyright 2000-2018 Kevin
+  Atkinson, 2020.12.07 — permissive (see tool/data/scowl/COPYRIGHT).
+  http://wordlist.aspell.net/ Used for data/lexicon.txt (tiers up to 70).
+
+- 12dicts (Alan Beale), 6.0.2 — public domain, acknowledgment requested.
+  http://wordlist.aspell.net/12dicts/ The 3esl and 2of12 lists are used for
+  the rungs past Grade 12 (data/rung-beyond-*.txt).
+
 Our compilation, level assignments, and derived lists (© 2026 Haha Moment, LLC)
 are likewise licensed CC BY-SA 4.0. If you reuse the data, please retain this
 attribution.

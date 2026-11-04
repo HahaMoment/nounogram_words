@@ -23,6 +23,19 @@ a young child already knows isn't labelled harder than it is.
 
 Only plain A–Z words of length ≥ 2 are kept.
 
+## Beyond the grades
+
+Two more lists come from SCOWL and 12dicts (see `NOTICE`):
+
+- `data/rung-beyond-1.txt`, `data/rung-beyond-2.txt` — lemma lists past
+  Grade 12 (12dicts `3esl` minus the grades, then `2of12` minus that), to
+  extend the graded pool for adult players.
+- `data/lexicon.txt` — every plain word SCOWL knows up to tier 70, plus the
+  grades and rungs. A superset for checking that a string is an English word;
+  not a pool to draw answers from.
+
+`tool/overlap.dart` prints how the grades sit against the SCOWL tiers.
+
 ## Layout
 
 - `data/grade-*.txt` — per-grade word lists (canonical, reusable).

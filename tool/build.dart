@@ -23,7 +23,22 @@
 //
 // Sources: Fry (public domain), Dolch (public domain), NGSL & NAWL
 // (CC BY-SA 4.0). Only plain A-Z words of length >= 2 survive. See README.
+//
+// Beyond the grades it also writes, from SCOWL and 12dicts (public domain):
+//   - data/rung-beyond-1.txt  12dicts 3esl minus the graded words
+//   - data/rung-beyond-2.txt  12dicts 2of12 minus the above
+//   - data/lexicon.txt        every word SCOWL knows up to [lexiconSize],
+//                             plus the grades and rungs
+// The rungs continue the graded pool past Grade 12 with lemma lists; the
+// lexicon is the superset a solver may assume a player would accept as a
+// word, and is never a pool to draw answers from.
 import 'dart:io';
+
+import 'lists.dart';
+
+/// SCOWL tier the lexicon is cut at. 70 ("large") is common dictionary
+/// vocabulary with inflections; 80 adds ENABLE and the UK cryptics list.
+const lexiconSize = 70;
 
 const levelNames = [
   'prek', 'k', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
@@ -157,4 +172,21 @@ void main() {
   File('lib/src/word_levels_data.dart').writeAsStringSync(dart.toString());
 
   stdout.writeln('built ${words.length} words; per-level ${counts.join(', ')}');
+
+  // --- Rungs past Grade 12 and the lexicon ---------------------------------
+  final graded = level.keys.toSet();
+  final rung1 = twelveDicts('3esl').difference(graded);
+  final rung2 = twelveDicts('2of12').difference(graded).difference(rung1);
+  final lexicon = scowlUpTo(lexiconSize)..addAll(graded)..addAll(rung1)..addAll(rung2);
+
+  void writeList(String path, Set<String> list) {
+    final sorted = list.toList()..sort();
+    File(path).writeAsStringSync('${sorted.join('\n')}\n');
+  }
+
+  writeList('data/rung-beyond-1.txt', rung1);
+  writeList('data/rung-beyond-2.txt', rung2);
+  writeList('data/lexicon.txt', lexicon);
+  stdout.writeln('rungs ${rung1.length}, ${rung2.length}; '
+      'lexicon ${lexicon.length} (SCOWL $lexiconSize)');
 }
