@@ -40,4 +40,5 @@ Set<String> scowlUpTo(int size) => {
         if (s <= size) ...scowlTierDelta(s),
     };
 
-Set<String> twelveDicts(String list) => plainWords('tool/data/12dicts/$list.txt');
+Set<String> twelveDicts(String list) =>
+    plainWords('tool/data/12dicts/$list.txt');

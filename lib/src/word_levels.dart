@@ -1,7 +1,9 @@
-import 'word_levels_data.dart';
-
-/// Reading levels a word can belong to, ordered easiest-first. The index lines
-/// up with the values stored in [kWordLevelIndex].
+/// Reading levels a word can belong to, ordered easiest-first. The index is
+/// the level number in `data/word-levels.csv`.
+///
+/// Pre-K through Grade 12 come from curriculum lists and carry a grade claim.
+/// The three levels after them continue the pool for adult players and claim
+/// only how common the words are (see tool/build.dart).
 enum WordLevel {
   preK,
   kindergarten,
@@ -16,9 +18,18 @@ enum WordLevel {
   grade9,
   grade10,
   grade11,
-  grade12;
+  grade12,
+  familiar,
+  uncommon,
+  obscure;
 
-  /// A full label for menus ("Kindergarten", "Grade 1").
+  /// The last level that is a school grade.
+  static const lastGrade = grade12;
+
+  /// Whether this level names a school grade (as opposed to a tier past them).
+  bool get isGrade => index <= lastGrade.index;
+
+  /// A full label for menus ("Kindergarten", "Grade 1", "Familiar").
   String get label => switch (this) {
         WordLevel.preK => 'Pre-K',
         WordLevel.kindergarten => 'Kindergarten',
@@ -34,9 +45,13 @@ enum WordLevel {
         WordLevel.grade10 => 'Grade 10',
         WordLevel.grade11 => 'Grade 11',
         WordLevel.grade12 => 'Grade 12',
+        WordLevel.familiar => 'Familiar',
+        WordLevel.uncommon => 'Uncommon',
+        WordLevel.obscure => 'Obscure',
       };
 
-  /// A compact badge ("PK", "K", "1" … "12") for tagging words inline.
+  /// A compact badge ("PK", "K", "1" … "12", "F", "U", "O") for tagging
+  /// words inline.
   String get badge => switch (this) {
         WordLevel.preK => 'PK',
         WordLevel.kindergarten => 'K',
@@ -52,21 +67,32 @@ enum WordLevel {
         WordLevel.grade10 => '10',
         WordLevel.grade11 => '11',
         WordLevel.grade12 => '12',
+        WordLevel.familiar => 'F',
+        WordLevel.uncommon => 'U',
+        WordLevel.obscure => 'O',
+      };
+
+  /// The data file holding this level's words, relative to `lib/data/`.
+  String get fileName => switch (this) {
+        WordLevel.preK => 'grade-prek.txt',
+        WordLevel.kindergarten => 'grade-k.txt',
+        WordLevel.grade1 => 'grade-1.txt',
+        WordLevel.grade2 => 'grade-2.txt',
+        WordLevel.grade3 => 'grade-3.txt',
+        WordLevel.grade4 => 'grade-4.txt',
+        WordLevel.grade5 => 'grade-5.txt',
+        WordLevel.grade6 => 'grade-6.txt',
+        WordLevel.grade7 => 'grade-7.txt',
+        WordLevel.grade8 => 'grade-8.txt',
+        WordLevel.grade9 => 'grade-9.txt',
+        WordLevel.grade10 => 'grade-10.txt',
+        WordLevel.grade11 => 'grade-11.txt',
+        WordLevel.grade12 => 'grade-12.txt',
+        WordLevel.familiar => 'familiar.txt',
+        WordLevel.uncommon => 'uncommon.txt',
+        WordLevel.obscure => 'obscure.txt',
       };
 }
 
-/// The reading level [word] is first learned at, or null if it isn't in the
-/// graded lists.
-WordLevel? levelOf(String word) {
-  final index = kWordLevelIndex[word.toUpperCase()];
-  return index == null ? null : WordLevel.values[index];
-}
-
-/// Every graded word at [max] or an easier level, uppercased and sorted.
-List<String> wordsUpToLevel(WordLevel max) {
-  final out = [
-    for (final entry in kWordLevelIndex.entries)
-      if (entry.value <= max.index) entry.key,
-  ]..sort();
-  return out;
-}
+/// The data file holding the lexicon, relative to `lib/data/`.
+const lexiconFileName = 'lexicon.txt';

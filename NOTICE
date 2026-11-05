@@ -1,7 +1,7 @@
 nounogram_words — attribution for the word data
 =================================================
 
-The graded word lists in this package (data/, lib/src/word_levels_data.dart)
+The word lists in this package (data/, lib/data/)
 are derived from the following sources and are released under CC BY-SA 4.0.
 
 - Fry Instant Word List (Edward B. Fry) — public domain.
@@ -20,11 +20,12 @@ are derived from the following sources and are released under CC BY-SA 4.0.
 
 - SCOWL (Spell Checker Oriented Word Lists), Copyright 2000-2018 Kevin
   Atkinson, 2020.12.07 — permissive (see tool/data/scowl/COPYRIGHT).
-  http://wordlist.aspell.net/ Used for data/lexicon.txt (tiers up to 70).
+  http://wordlist.aspell.net/ Used for lib/data/lexicon.txt (tiers up to 70) and to split the tiers past
+  Grade 12 by how common a word is.
 
 - 12dicts (Alan Beale), 6.0.2 — public domain, acknowledgment requested.
-  http://wordlist.aspell.net/12dicts/ The 3esl and 2of12 lists are used for
-  the rungs past Grade 12 (data/rung-beyond-*.txt).
+  http://wordlist.aspell.net/12dicts/ The 3esl and 2of12 lists are the
+  Familiar, Uncommon and Obscure levels (lib/data/{familiar,uncommon,obscure}.txt).
 
 Our compilation, level assignments, and derived lists (© 2026 Haha Moment, LLC)
 are likewise licensed CC BY-SA 4.0. If you reuse the data, please retain this
