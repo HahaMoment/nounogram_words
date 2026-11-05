@@ -24,10 +24,10 @@ class WordStore {
   WordStore.preloaded(Map<WordLevel, List<String>> levels, {Lexicon? lexicon})
       : _read = _cannotRead,
         _loadedLexicon = lexicon {
+    // No Future is kept, so the store can be sent to an isolate.
     for (final entry in levels.entries) {
       _install(entry.key, List.of(entry.value));
     }
-    if (lexicon != null) _lexicon = Future.value(lexicon);
   }
 
   static Future<String> _cannotRead(String name) =>
@@ -107,7 +107,12 @@ class WordStore {
   }
 
   /// The lexicon, read once and kept.
-  Future<Lexicon> lexicon() => _lexicon ??= _read(lexiconFileName).then((t) {
-        return _loadedLexicon = Lexicon(parse(t));
-      });
+  Future<Lexicon> lexicon() {
+    final loaded = _loadedLexicon;
+    if (loaded != null) return Future.value(loaded);
+    return _lexicon ??= _read(lexiconFileName).then((t) {
+      _lexicon = null;
+      return _loadedLexicon = Lexicon(parse(t));
+    });
+  }
 }
