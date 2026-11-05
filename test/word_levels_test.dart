@@ -140,5 +140,11 @@ void main() {
       expect(fives.every((w) => w.length == 5), isTrue);
       expect(fives, isNot(contains('HOUSES')));
     });
+
+    test('lists the words a scrambled bag could spell', () {
+      expect(lexicon.anagramsOf('binary'), ['BINARY', 'BRAINY']);
+      expect(lexicon.anagramsOf('ZZXQ'), isEmpty);
+      expect(sortedLetters('brainy'), 'ABINRY');
+    });
   });
 }

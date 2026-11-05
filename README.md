@@ -35,7 +35,8 @@ Only plain A–Z words of length ≥ 2 are kept.
 
 `lib/data/lexicon.txt` holds every plain word SCOWL knows up to tier 70, plus
 every leveled word: a superset for checking that a string is an English word.
-It is not a pool to draw answers from.
+It is not a pool to draw answers from. `Lexicon.anagramsOf` lists the words a
+bag of letters could spell, for checking that a scrambled word has one reading.
 
 ## Layout
 

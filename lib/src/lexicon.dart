@@ -10,6 +10,7 @@ class Lexicon {
 
   final Set<String> _words;
   final Map<int, List<String>> _byLength = {};
+  Map<String, List<String>>? _byBag;
 
   int get length => _words.length;
 
@@ -20,4 +21,28 @@ class Lexicon {
         for (final w in _words)
           if (w.length == n) w,
       ]..sort();
+
+  /// Every word spelled with exactly the letters of [word], sorted; [word]
+  /// itself included when it is one. The spellings a scrambled bag of those
+  /// letters could be. The index over every word is built on first use.
+  List<String> anagramsOf(String word) {
+    final byBag = _byBag ??= _indexBags();
+    return byBag[sortedLetters(word)] ?? const [];
+  }
+
+  Map<String, List<String>> _indexBags() {
+    final byBag = <String, List<String>>{};
+    for (final w in _words) {
+      (byBag[sortedLetters(w)] ??= []).add(w);
+    }
+    for (final list in byBag.values) {
+      list.sort();
+    }
+    return byBag;
+  }
 }
+
+/// A word's letters sorted, upper case: two words share it iff they are
+/// anagrams.
+String sortedLetters(String word) =>
+    (word.toUpperCase().split('')..sort()).join();
