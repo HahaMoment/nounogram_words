@@ -18,11 +18,41 @@ typedef WordReader = Future<String> Function(String fileName);
 class WordStore {
   WordStore(this._read);
 
+  /// A store already holding [levels] (and [lexicon]), handed another store's
+  /// [snapshot]: for an isolate, which cannot read the app's assets, or a
+  /// test. It can load nothing more.
+  WordStore.preloaded(Map<WordLevel, List<String>> levels, {Lexicon? lexicon})
+      : _read = _cannotRead,
+        _loadedLexicon = lexicon {
+    for (final entry in levels.entries) {
+      _install(entry.key, List.of(entry.value));
+    }
+    if (lexicon != null) _lexicon = Future.value(lexicon);
+  }
+
+  static Future<String> _cannotRead(String name) =>
+      throw StateError('a preloaded store cannot read $name');
+
   final WordReader _read;
   final Map<WordLevel, List<String>> _words = {};
   final Map<String, WordLevel> _levelOf = {};
   final Map<WordLevel, Future<void>> _loading = {};
   Future<Lexicon>? _lexicon;
+  Lexicon? _loadedLexicon;
+
+  /// The loaded levels and their words, to hand to [WordStore.preloaded].
+  Map<WordLevel, List<String>> get snapshot => Map.unmodifiable(_words);
+
+  /// The lexicon once [lexicon] has completed, else null.
+  Lexicon? get loadedLexicon => _loadedLexicon;
+
+  void _install(WordLevel level, List<String> words) {
+    words.sort();
+    _words[level] = words;
+    for (final w in words) {
+      _levelOf[w] = level;
+    }
+  }
 
   /// Upper-cased words of a level file, one per line, blank lines dropped.
   static List<String> parse(String text) => [
@@ -43,11 +73,7 @@ class WordStore {
   Future<void> _load(WordLevel level) {
     if (_words.containsKey(level)) return Future.value();
     return _loading[level] ??= _read(level.fileName).then((text) {
-      final words = parse(text)..sort();
-      _words[level] = words;
-      for (final w in words) {
-        _levelOf[w] = level;
-      }
+      _install(level, parse(text));
       _loading.remove(level);
     });
   }
@@ -81,6 +107,7 @@ class WordStore {
   }
 
   /// The lexicon, read once and kept.
-  Future<Lexicon> lexicon() =>
-      _lexicon ??= _read(lexiconFileName).then((t) => Lexicon(parse(t)));
+  Future<Lexicon> lexicon() => _lexicon ??= _read(lexiconFileName).then((t) {
+        return _loadedLexicon = Lexicon(parse(t));
+      });
 }

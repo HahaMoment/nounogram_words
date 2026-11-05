@@ -104,6 +104,20 @@ void main() {
     });
   });
 
+  group('preloaded', () {
+    test('carries another store\'s levels and lexicon, and loads nothing',
+        () async {
+      final copy =
+          WordStore.preloaded(store.snapshot, lexicon: await store.lexicon());
+      expect(copy.levelOf('the'), store.levelOf('the'));
+      expect(copy.wordsAt(WordLevel.obscure), store.wordsAt(WordLevel.obscure));
+      expect(copy.loadedLexicon, isNotNull);
+      final empty = WordStore.preloaded(const {});
+      expect(empty.loadedLexicon, isNull);
+      expect(empty.ensure([WordLevel.preK]), throwsStateError);
+    });
+  });
+
   group('lexicon', () {
     late Lexicon lexicon;
     setUpAll(() async => lexicon = await store.lexicon());
